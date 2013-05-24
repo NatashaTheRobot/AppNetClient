@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  UpdateCell.h
 //  AppNet
 //
 //  Created by Natasha Murashev on 5/24/13.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UITableViewController
+@interface UpdateCell : UITableViewCell
+
+@property (weak, nonatomic) IBOutlet UILabel *textLabel;
 
 @end
