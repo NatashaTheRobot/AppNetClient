@@ -14,7 +14,7 @@
 {
     __weak IBOutlet UIActivityIndicatorView *_activityIndicator;
     
-    NSMutableArray *_feedItems;
+    NSArray *_feedItems;
     
 }
 
@@ -30,18 +30,23 @@
     [super viewDidLoad];
 
     [self getLatestAppNetUpdates];
+    
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self
+                       action:@selector(refresh:)
+             forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = refreshControl;
 }
 
+- (void)refresh:(id)sender
+{
+    [self getLatestAppNetUpdates];
+    [self.refreshControl endRefreshing];
+}
 
 - (void)getLatestAppNetUpdates
 {
     [_activityIndicator startAnimating];
-    
-    if (!_feedItems) {
-        _feedItems = [[NSMutableArray alloc] init];
-    } else {
-        [_feedItems removeAllObjects];
-    }
     
     NSURL *url = [NSURL URLWithString:@"https://alpha-api.app.net/stream/0/posts/stream/global"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
@@ -50,6 +55,7 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (!error) {
+                                   NSMutableArray *feedItemsUnsorted = [[NSMutableArray alloc] init];
                                    NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
                                    NSArray *publicFeedArray = [responseDictionary objectForKey:@"data"];
                                    
@@ -60,11 +66,12 @@
                                        feedItem.text = [update objectForKey:@"text"];
                                        feedItem.username = [update valueForKeyPath:@"user.username"];
                                        feedItem.avatarURL = [NSURL URLWithString:[update valueForKeyPath:@"user.avatar_image.url"]];
-                                       
-                                       [_feedItems insertObject:feedItem atIndex:_feedItems.count];
+                                                                              
+                                       [feedItemsUnsorted addObject:feedItem];
                                        
                                    }
                                    
+                                   _feedItems = [[feedItemsUnsorted reverseObjectEnumerator] allObjects];
                                    [self.tableView reloadData];
                                    [_activityIndicator stopAnimating];
                                }
@@ -103,19 +110,21 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     
-    FeedItem *feedItem = _feedItems[indexPath.row];
-    
-    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:feedItem.avatarURL]];
-    
-    cell.imageView.image = [self resizeImage:image toSize:CGSizeMake(50, 50)];
-    cell.imageView.layer.cornerRadius = 10;
-    cell.imageView.layer.masksToBounds = YES;
-    
-    cell.textLabel.text = feedItem.text;
-    cell.textLabel.lineBreakMode = YES;
-    cell.textLabel.numberOfLines = 0;
-    
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"@%@", feedItem.username];
+    if (_feedItems) {
+        FeedItem *feedItem = _feedItems[indexPath.row];
+        
+        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:feedItem.avatarURL]];
+        
+        cell.imageView.image = [self resizeImage:image toSize:CGSizeMake(50, 50)];
+        cell.imageView.layer.cornerRadius = 10;
+        cell.imageView.layer.masksToBounds = YES;
+        
+        cell.textLabel.text = feedItem.text;
+        cell.textLabel.lineBreakMode = YES;
+        cell.textLabel.numberOfLines = 0;
+        
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"@%@", feedItem.username];
+    }
         
     return cell;
 }
