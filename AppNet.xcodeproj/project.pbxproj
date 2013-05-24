@@ -20,7 +20,6 @@
 		9CE5E84D174FEA03004D25A8 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5E84C174FEA03004D25A8 /* ViewController.m */; };
 		9CE5E854174FF197004D25A8 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CE5E853174FF197004D25A8 /* QuartzCore.framework */; };
 		9CE5E857174FF5DD004D25A8 /* FeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5E856174FF5DD004D25A8 /* FeedItem.m */; };
-		9CE5E85A175001C9004D25A8 /* UpdateCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5E859175001C9004D25A8 /* UpdateCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,8 +42,6 @@
 		9CE5E853174FF197004D25A8 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		9CE5E855174FF5DD004D25A8 /* FeedItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedItem.h; sourceTree = "<group>"; };
 		9CE5E856174FF5DD004D25A8 /* FeedItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedItem.m; sourceTree = "<group>"; };
-		9CE5E858175001C9004D25A8 /* UpdateCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateCell.h; sourceTree = "<group>"; };
-		9CE5E859175001C9004D25A8 /* UpdateCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,8 +95,6 @@
 				9CE5E840174FE8B1004D25A8 /* MainStoryboard.storyboard */,
 				9CE5E84B174FEA03004D25A8 /* ViewController.h */,
 				9CE5E84C174FEA03004D25A8 /* ViewController.m */,
-				9CE5E858175001C9004D25A8 /* UpdateCell.h */,
-				9CE5E859175001C9004D25A8 /* UpdateCell.m */,
 				9CE5E855174FF5DD004D25A8 /* FeedItem.h */,
 				9CE5E856174FF5DD004D25A8 /* FeedItem.m */,
 				9CE5E82F174FE8B1004D25A8 /* Supporting Files */,
@@ -191,7 +186,6 @@
 				9CE5E839174FE8B1004D25A8 /* AppDelegate.m in Sources */,
 				9CE5E84D174FEA03004D25A8 /* ViewController.m in Sources */,
 				9CE5E857174FF5DD004D25A8 /* FeedItem.m in Sources */,
-				9CE5E85A175001C9004D25A8 /* UpdateCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

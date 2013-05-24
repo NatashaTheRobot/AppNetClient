@@ -9,7 +9,6 @@
 #import "ViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "FeedItem.h"
-#import "UpdateCell.h"
 
 @interface ViewController ()
 {
@@ -88,65 +87,44 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIdentifier = @"update";
-    UpdateCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
     
-//    if (!cell) {
-//        cell = [[UpdateCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
-//    }
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
+    }
     
     FeedItem *feedItem = _feedItems[indexPath.row];
     
-    cell.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfURL:feedItem.avatarURL]];
+    UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:feedItem.avatarURL]];
+    CGSize size = CGSizeMake(50, 50);
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage *new_image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    
+    cell.imageView.image = new_image;
     cell.imageView.layer.cornerRadius = 10;
     cell.imageView.layer.masksToBounds = YES;
     
     cell.textLabel.text = feedItem.text;
     cell.textLabel.lineBreakMode = YES;
-    
-    
-    [cell.textLabel sizeToFit];
-    
-    CGSize maxSize = CGSizeMake(cell.textLabel.frame.size.width, CGFLOAT_MAX);
-    
-    CGSize requiredSize = [cell.textLabel sizeThatFits:maxSize];
-    
-    
-    
-//    UIFont *font = [UIFont boldSystemFontOfSize:11.0];
-//    CGSize textLabelsize = CGSizeMake(cell.textLabel.frame.size.width,
-//                             cell.frame.size.height - cell.detailTextLabel.frame.size.height);
-//    
-//    CGSize size = [feedItem.text sizeWithFont:font
-//                            constrainedToSize:textLabelsize
-//                                lineBreakMode:NSLineBreakByWordWrapping];
-//    CGFloat numberOfLines = size.height / font.lineHeight;
-//    
-//    cell.textLabel.numberOfLines = (int)numberOfLines + 1;
-//    NSLog(@"%i", cell.textLabel.numberOfLines);
+    cell.textLabel.numberOfLines = 0;
     
     cell.detailTextLabel.text = feedItem.username;
-    
+        
     return cell;
 }
 
-//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    
-//    if (_feedItems[indexPath.row]) {
-//        UpdateCell *cell = (UpdateCell *)[self.tableView cellForRowAtIndexPath:indexPath];
-//        
-////        cell.textLabel.text = ((FeedItem *)_feedItems[indexPath.row]).text;
-////        
-////        [cell.textLabel sizeToFit];
-////        
-////        CGSize maxSize = CGSizeMake(cell.textLabel.frame.size.width, CGFLOAT_MAX);
-////        
-////        CGSize requiredSize = [cell.textLabel sizeThatFits:maxSize];
-////        
-////        return requiredSize.height;
-//    }
-//    
-//    return 50.0;
-//}
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    FeedItem *feedItem = _feedItems[indexPath.row];
+    NSString *text = feedItem.text;
+    CGSize maximumLabelSize = CGSizeMake(160, CGFLOAT_MAX);
+    UIFont *font = [UIFont systemFontOfSize:11];
+    CGSize expectedLabelSize = [text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:NSLineBreakByWordWrapping];
+    int a = expectedLabelSize.height + 55;
+    return a;
+}
 
 @end
