@@ -19,6 +19,7 @@
 }
 
 - (void)getLatestAppNetUpdates;
+- (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
 
 @end
 
@@ -84,6 +85,15 @@
     return _feedItems.count;
 }
 
+- (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size
+{
+    UIGraphicsBeginImageContext(size);
+    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    UIImage *new_image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return new_image;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIdentifier = @"update";
@@ -96,14 +106,8 @@
     FeedItem *feedItem = _feedItems[indexPath.row];
     
     UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:feedItem.avatarURL]];
-    CGSize size = CGSizeMake(50, 50);
-    UIGraphicsBeginImageContext(size);
-    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
-    UIImage *new_image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
     
-    
-    cell.imageView.image = new_image;
+    cell.imageView.image = [self resizeImage:image toSize:CGSizeMake(50, 50)];
     cell.imageView.layer.cornerRadius = 10;
     cell.imageView.layer.masksToBounds = YES;
     
@@ -111,7 +115,7 @@
     cell.textLabel.lineBreakMode = YES;
     cell.textLabel.numberOfLines = 0;
     
-    cell.detailTextLabel.text = feedItem.username;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"@%@", feedItem.username];
         
     return cell;
 }
@@ -122,9 +126,11 @@
     NSString *text = feedItem.text;
     CGSize maximumLabelSize = CGSizeMake(160, CGFLOAT_MAX);
     UIFont *font = [UIFont systemFontOfSize:11];
-    CGSize expectedLabelSize = [text sizeWithFont:font constrainedToSize:maximumLabelSize lineBreakMode:NSLineBreakByWordWrapping];
-    int a = expectedLabelSize.height + 55;
-    return a;
+    CGSize expectedLabelSize = [text sizeWithFont:font
+                                constrainedToSize:maximumLabelSize
+                                    lineBreakMode:NSLineBreakByWordWrapping];
+    CGFloat height = expectedLabelSize.height + 55;
+    return height;
 }
 
 @end
