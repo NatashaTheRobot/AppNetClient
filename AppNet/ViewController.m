@@ -135,6 +135,7 @@
         [self downloadImage:feedItem.url completionBlock:^(BOOL succeeded, UIImage *image) {
             if (succeeded) {
                 cell.imageView.image = image;
+                feedItem.userImage = image;
             }
         }];
     }
