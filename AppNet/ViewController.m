@@ -20,6 +20,8 @@
 - (void)getLatestAppNetUpdates;
 - (void)addRefreshControl;
 
+- (void)downloadImage:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))handler;
+
 @end
 
 @implementation ViewController
@@ -65,8 +67,7 @@
                                        
                                        feedItem.text = [update objectForKey:@"text"];
                                        feedItem.username = [update valueForKeyPath:@"user.username"];
-                                       NSURL *userImageURL = [NSURL URLWithString:[update valueForKeyPath:@"user.avatar_image.url"]];
-                                       feedItem.userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:userImageURL]];
+                                       feedItem.url = [NSURL URLWithString:[update valueForKeyPath:@"user.avatar_image.url"]];
                                        
                                        [feedItemsUnsorted addObject:feedItem];
                                        
@@ -86,6 +87,20 @@
                                
                            }];
     
+}
+
+- (void)downloadImage:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))handler
+{
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+            if ( !error )
+            {
+                UIImage *image = [[UIImage alloc] initWithData:data];
+                handler(YES,image);
+            } else{
+                handler(NO,nil);
+            }
+    }];
 }
 
 #pragma mark - Table view data source
@@ -110,8 +125,18 @@
     }
     
     FeedItem *feedItem = _feedItems[indexPath.row];
-        
-    cell.imageView.image = feedItem.userImage;
+    
+    if (feedItem.userImage) {
+        cell.imageView.image = feedItem.userImage;
+    } else {
+        cell.imageView.image = [UIImage imageNamed:@"batman.png"];
+        [self downloadImage:feedItem.url completionBlock:^(BOOL succeeded, UIImage *image) {
+            if (succeeded) {
+                cell.imageView.image = image;
+            }
+        }];
+    }
+
     cell.imageView.layer.cornerRadius = 10;
     cell.imageView.layer.masksToBounds = YES;
         
