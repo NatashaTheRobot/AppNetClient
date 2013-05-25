@@ -15,6 +15,7 @@
     __weak IBOutlet UIActivityIndicatorView *_activityIndicator;
     
     NSArray *_feedItems;
+    NSMutableDictionary *_imageCache;
     
 }
 
@@ -28,7 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     [self getLatestAppNetUpdates];
     
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
@@ -46,6 +47,8 @@
 
 - (void)getLatestAppNetUpdates
 {
+    _imageCache = [[NSMutableDictionary alloc] init];
+    
     [_activityIndicator startAnimating];
     
     NSURL *url = [NSURL URLWithString:@"https://alpha-api.app.net/stream/0/posts/stream/global"];
@@ -65,8 +68,10 @@
                                        
                                        feedItem.text = [update objectForKey:@"text"];
                                        feedItem.username = [update valueForKeyPath:@"user.username"];
-                                       feedItem.avatarURL = [NSURL URLWithString:[update valueForKeyPath:@"user.avatar_image.url"]];
-                                                                              
+                                       feedItem.avatarURL = [NSURL URLWithString:[update valueForKeyPath:@"user.avatar_image.url"]];                                       
+                                       UIImage *userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:feedItem.avatarURL]];
+                                       [_imageCache setObject:userImage forKey:feedItem.username];
+                                       
                                        [feedItemsUnsorted addObject:feedItem];
                                        
                                    }
@@ -74,6 +79,9 @@
                                    _feedItems = [[feedItemsUnsorted reverseObjectEnumerator] allObjects];
                                    [self.tableView reloadData];
                                    [_activityIndicator stopAnimating];
+                                   if ([self.refreshControl isRefreshing]) {
+                                       [self.refreshControl endRefreshing];
+                                   }
                                }
                                
                            }];
@@ -113,7 +121,7 @@
     if (_feedItems) {
         FeedItem *feedItem = _feedItems[indexPath.row];
         
-        UIImage *image = [UIImage imageWithData:[NSData dataWithContentsOfURL:feedItem.avatarURL]];
+        UIImage *image = [_imageCache objectForKey:feedItem.username];
         
         cell.imageView.image = [self resizeImage:image toSize:CGSizeMake(50, 50)];
         cell.imageView.layer.cornerRadius = 10;
