@@ -20,7 +20,7 @@
 - (void)getLatestAppNetUpdates;
 - (void)addRefreshControl;
 
-- (void)downloadImage:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))handler;
+- (void)downloadImage:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))completionBlock;
 
 @end
 
@@ -89,18 +89,20 @@
     
 }
 
-- (void)downloadImage:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))handler
+- (void)downloadImage:(NSURL *)url completionBlock:(void (^)(BOOL succeeded, UIImage *image))completionBlock
 {
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
-            if ( !error )
-            {
-                UIImage *image = [[UIImage alloc] initWithData:data];
-                handler(YES,image);
-            } else{
-                handler(NO,nil);
-            }
-    }];
+    [NSURLConnection sendAsynchronousRequest:request
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+                               if ( !error )
+                               {
+                                    UIImage *image = [[UIImage alloc] initWithData:data];
+                                    completionBlock(YES,image);
+                                } else{
+                                    completionBlock(NO,nil);
+                                }
+                           }];
 }
 
 #pragma mark - Table view data source
