@@ -14,9 +14,7 @@
 {
     __weak IBOutlet UIActivityIndicatorView *_activityIndicator;
     
-    NSArray *_feedItems;
-    NSMutableDictionary *_imageCache;
-    
+    NSArray *_feedItems;    
 }
 
 - (void)getLatestAppNetUpdates;
@@ -46,9 +44,7 @@
 }
 
 - (void)getLatestAppNetUpdates
-{
-    _imageCache = [[NSMutableDictionary alloc] init];
-    
+{    
     [_activityIndicator startAnimating];
     
     NSURL *url = [NSURL URLWithString:@"https://alpha-api.app.net/stream/0/posts/stream/global"];
@@ -68,9 +64,8 @@
                                        
                                        feedItem.text = [update objectForKey:@"text"];
                                        feedItem.username = [update valueForKeyPath:@"user.username"];
-                                       feedItem.avatarURL = [NSURL URLWithString:[update valueForKeyPath:@"user.avatar_image.url"]];                                       
-                                       UIImage *userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:feedItem.avatarURL]];
-                                       [_imageCache setObject:userImage forKey:feedItem.username];
+                                       NSURL *userImageURL = [NSURL URLWithString:[update valueForKeyPath:@"user.avatar_image.url"]];
+                                       feedItem.userImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:userImageURL]];
                                        
                                        [feedItemsUnsorted addObject:feedItem];
                                        
@@ -118,21 +113,18 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     
-    if (_feedItems) {
-        FeedItem *feedItem = _feedItems[indexPath.row];
+
+    FeedItem *feedItem = _feedItems[indexPath.row];
         
-        UIImage *image = [_imageCache objectForKey:feedItem.username];
+    cell.imageView.image = [self resizeImage:feedItem.userImage toSize:CGSizeMake(50, 50)];
+    cell.imageView.layer.cornerRadius = 10;
+    cell.imageView.layer.masksToBounds = YES;
         
-        cell.imageView.image = [self resizeImage:image toSize:CGSizeMake(50, 50)];
-        cell.imageView.layer.cornerRadius = 10;
-        cell.imageView.layer.masksToBounds = YES;
-        
-        cell.textLabel.text = feedItem.text;
-        cell.textLabel.lineBreakMode = YES;
-        cell.textLabel.numberOfLines = 0;
+    cell.textLabel.text = feedItem.text;
+    cell.textLabel.lineBreakMode = YES;
+    cell.textLabel.numberOfLines = 0;
         
         cell.detailTextLabel.text = [NSString stringWithFormat:@"@%@", feedItem.username];
-    }
         
     return cell;
 }
