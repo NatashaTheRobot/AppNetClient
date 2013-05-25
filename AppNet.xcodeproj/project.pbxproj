@@ -22,6 +22,8 @@
 		9CE5E857174FF5DD004D25A8 /* FeedItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CE5E856174FF5DD004D25A8 /* FeedItem.m */; };
 		9CE5E85D17506021004D25A8 /* batman@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CE5E85B17506021004D25A8 /* batman@2x.png */; };
 		9CE5E85E17506021004D25A8 /* batman.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CE5E85C17506021004D25A8 /* batman.png */; };
+		9CE5E86017506EBE004D25A8 /* navBar.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CE5E85F17506EBE004D25A8 /* navBar.png */; };
+		9CE5E86217506EC9004D25A8 /* navBar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CE5E86117506EC9004D25A8 /* navBar@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +48,8 @@
 		9CE5E856174FF5DD004D25A8 /* FeedItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedItem.m; sourceTree = "<group>"; };
 		9CE5E85B17506021004D25A8 /* batman@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "batman@2x.png"; sourceTree = "<group>"; };
 		9CE5E85C17506021004D25A8 /* batman.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = batman.png; sourceTree = "<group>"; };
+		9CE5E85F17506EBE004D25A8 /* navBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = navBar.png; sourceTree = "<group>"; };
+		9CE5E86117506EC9004D25A8 /* navBar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "navBar@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +113,8 @@
 		9CE5E82F174FE8B1004D25A8 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				9CE5E86117506EC9004D25A8 /* navBar@2x.png */,
+				9CE5E85F17506EBE004D25A8 /* navBar.png */,
 				9CE5E85B17506021004D25A8 /* batman@2x.png */,
 				9CE5E85C17506021004D25A8 /* batman.png */,
 				9CE5E830174FE8B1004D25A8 /* AppNet-Info.plist */,
@@ -180,6 +186,8 @@
 				9CE5E842174FE8B1004D25A8 /* MainStoryboard.storyboard in Resources */,
 				9CE5E85D17506021004D25A8 /* batman@2x.png in Resources */,
 				9CE5E85E17506021004D25A8 /* batman.png in Resources */,
+				9CE5E86017506EBE004D25A8 /* navBar.png in Resources */,
+				9CE5E86217506EC9004D25A8 /* navBar@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

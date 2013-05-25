@@ -30,6 +30,8 @@
 {
     [super viewDidLoad];
     
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"navBar.png"] forBarMetrics:UIBarMetricsDefault];
+    
     [_activityIndicator startAnimating];
     
     [self getLatestAppNetUpdates];
