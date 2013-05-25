@@ -16,6 +16,19 @@
 
 @implementation FeedItem
 
+-(void)setCreatedAt:(NSString *)createdAt
+{
+    _createdAt = [self convertToDateFromString:createdAt];
+}
+
+- (NSDate *)convertToDateFromString:(NSString *)dateString
+{
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+    NSDate *date = [dateFormat dateFromString:dateString];
+    return date;
+}
+
 - (void)setUserImage:(UIImage *)userImage
 {
     _userImage = [self resizeImage:userImage toSize:CGSizeMake(50, 50)];
@@ -29,5 +42,7 @@
     UIGraphicsEndImageContext();
     return resized_image;
 }
+
+
 
 @end

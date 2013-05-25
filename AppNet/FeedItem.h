@@ -14,5 +14,6 @@
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSURL *url;
 @property (strong, nonatomic) UIImage *userImage;
+@property (strong, nonatomic) NSDate *createdAt;
                         
 @end

@@ -68,12 +68,16 @@
                                        feedItem.text = [update objectForKey:@"text"];
                                        feedItem.username = [update valueForKeyPath:@"user.username"];
                                        feedItem.url = [NSURL URLWithString:[update valueForKeyPath:@"user.avatar_image.url"]];
-                                       
+                                       feedItem.createdAt = [update objectForKey:@"created_at"];
+                                                                              
                                        [feedItemsUnsorted addObject:feedItem];
                                        
                                    }
                                    
-                                   _feedItems = [[feedItemsUnsorted reverseObjectEnumerator] allObjects];
+                                   _feedItems = [feedItemsUnsorted sortedArrayUsingComparator:^NSComparisonResult(FeedItem *feedItem1, FeedItem *feedItem2) {
+                                       return ([feedItem1.createdAt compare:feedItem2.createdAt] == NSOrderedAscending);
+                                   }];
+                                   
                                    [self.tableView reloadData];
                                    
                                    if ([_activityIndicator isAnimating]) {
