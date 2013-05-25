@@ -18,7 +18,7 @@
 }
 
 - (void)getLatestAppNetUpdates;
-- (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size;
+- (void)addRefreshControl;
 
 @end
 
@@ -28,25 +28,24 @@
 {
     [super viewDidLoad];
     
+    [_activityIndicator startAnimating];
+    
     [self getLatestAppNetUpdates];
     
+    [self addRefreshControl];
+}
+
+- (void)addRefreshControl
+{
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self
-                       action:@selector(refresh:)
+                       action:@selector(getLatestAppNetUpdates)
              forControlEvents:UIControlEventValueChanged];
     self.refreshControl = refreshControl;
 }
 
-- (void)refresh:(id)sender
-{
-    [self getLatestAppNetUpdates];
-    [self.refreshControl endRefreshing];
-}
-
 - (void)getLatestAppNetUpdates
 {    
-    [_activityIndicator startAnimating];
-    
     NSURL *url = [NSURL URLWithString:@"https://alpha-api.app.net/stream/0/posts/stream/global"];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     
@@ -54,9 +53,11 @@
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                if (!error) {
-                                   NSMutableArray *feedItemsUnsorted = [[NSMutableArray alloc] init];
+                                   
                                    NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
                                    NSArray *publicFeedArray = [responseDictionary objectForKey:@"data"];
+                                   
+                                   NSMutableArray *feedItemsUnsorted = [[NSMutableArray alloc] init];
                                    
                                    for (NSDictionary *update in publicFeedArray) {
                                        
@@ -73,7 +74,11 @@
                                    
                                    _feedItems = [[feedItemsUnsorted reverseObjectEnumerator] allObjects];
                                    [self.tableView reloadData];
-                                   [_activityIndicator stopAnimating];
+                                   
+                                   if ([_activityIndicator isAnimating]) {
+                                       [_activityIndicator stopAnimating];
+                                   }
+                                   
                                    if ([self.refreshControl isRefreshing]) {
                                        [self.refreshControl endRefreshing];
                                    }
@@ -95,15 +100,6 @@
     return _feedItems.count;
 }
 
-- (UIImage *)resizeImage:(UIImage *)image toSize:(CGSize)size
-{
-    UIGraphicsBeginImageContext(size);
-    [image drawInRect:CGRectMake(0, 0, size.width, size.height)];
-    UIImage *new_image = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return new_image;
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *cellIdentifier = @"update";
@@ -113,10 +109,9 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     
-
     FeedItem *feedItem = _feedItems[indexPath.row];
         
-    cell.imageView.image = [self resizeImage:feedItem.userImage toSize:CGSizeMake(50, 50)];
+    cell.imageView.image = feedItem.userImage;
     cell.imageView.layer.cornerRadius = 10;
     cell.imageView.layer.masksToBounds = YES;
         
@@ -124,7 +119,7 @@
     cell.textLabel.lineBreakMode = YES;
     cell.textLabel.numberOfLines = 0;
         
-        cell.detailTextLabel.text = [NSString stringWithFormat:@"@%@", feedItem.username];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"@%@", feedItem.username];
         
     return cell;
 }
